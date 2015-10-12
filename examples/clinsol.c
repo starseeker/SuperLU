@@ -26,6 +26,7 @@ int main(int argc, char *argv[])
     mem_usage_t   mem_usage;
     superlu_options_t options;
     SuperLUStat_t stat;
+    FILE      *fp = stdin;
     
 #if ( DEBUGlevel>=1 )
     CHECK_MALLOC("Enter main()");
@@ -46,7 +47,7 @@ int main(int argc, char *argv[])
     set_default_options(&options);
 
     /* Read the matrix in Harwell-Boeing format. */
-    creadhb(&m, &n, &nnz, &a, &asub, &xa);
+    creadhb(fp, &m, &n, &nnz, &a, &asub, &xa);
 
     cCreate_CompCol_Matrix(&A, m, n, nnz, a, asub, xa, SLU_NC, SLU_C, SLU_GE);
     Astore = A.Store;
