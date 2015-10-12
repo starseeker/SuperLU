@@ -129,7 +129,7 @@ zgstrs (trans_t trans, SuperMatrix *L, SuperMatrix *U,
 	*info = -6;
     if ( *info ) {
 	i = -(*info);
-	xerbla_("zgstrs", &i);
+	input_error("zgstrs", &i);
 	return;
     }
 

@@ -109,7 +109,7 @@ sp_ctrsv(char *uplo, char *trans, char *diag, SuperMatrix *L,
     else if ( U->nrow != U->ncol || U->nrow < 0 ) *info = -5;
     if ( *info ) {
 	i = -(*info);
-	xerbla_("sp_ctrsv", &i);
+	input_error("sp_ctrsv", &i);
 	return 0;
     }
 
@@ -479,7 +479,7 @@ sp_cgemv(char *trans, complex alpha, SuperMatrix *A, complex *x,
     else if (incx == 0) info = 5;
     else if (incy == 0)	info = 8;
     if (info != 0) {
-	xerbla_("sp_cgemv ", &info);
+	input_error("sp_cgemv ", &info);
 	return 0;
     }
 

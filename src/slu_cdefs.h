@@ -79,6 +79,9 @@ typedef int int_t; /* default */
 
 #include <math.h>
 #include <limits.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
 #include "slu_Cnames.h"
 #include "supermatrix.h"
 #include "slu_util.h"
@@ -122,7 +125,7 @@ cgssvx(superlu_options_t *, SuperMatrix *, int *, int *, int *,
        char *, float *, float *, SuperMatrix *, SuperMatrix *,
        void *, int, SuperMatrix *, SuperMatrix *,
        float *, float *, float *, float *,
-       mem_usage_t *, SuperLUStat_t *, int *);
+       GlobalLU_t *, mem_usage_t *, SuperLUStat_t *, int *);
     /* ILU */
 extern void
 cgsisv(superlu_options_t *, SuperMatrix *, int *, int *, SuperMatrix *,
@@ -131,7 +134,7 @@ extern void
 cgsisx(superlu_options_t *, SuperMatrix *, int *, int *, int *,
        char *, float *, float *, SuperMatrix *, SuperMatrix *,
        void *, int, SuperMatrix *, SuperMatrix *, float *, float *,
-       mem_usage_t *, SuperLUStat_t *, int *);
+       GlobalLU_t *, mem_usage_t *, SuperLUStat_t *, int *);
 
 
 /*! \brief Supernodal LU factor related */
@@ -160,7 +163,8 @@ extern void    fixupL (const int, const int *, GlobalLU_t *);
 extern void    callocateA (int, int, complex **, int **, int **);
 extern void    cgstrf (superlu_options_t*, SuperMatrix*,
                        int, int, int*, void *, int, int *, int *, 
-                       SuperMatrix *, SuperMatrix *, SuperLUStat_t*, int *);
+                       SuperMatrix *, SuperMatrix *, GlobalLU_t *,
+		       SuperLUStat_t*, int *);
 extern int     csnode_dfs (const int, const int, const int *, const int *,
 			     const int *, int *, int *, GlobalLU_t *);
 extern int     csnode_bmod (const int, const int, const int, complex *,
@@ -191,7 +195,7 @@ extern void    cgstrs (trans_t, SuperMatrix *, SuperMatrix *, int *, int *,
 /* ILU */
 extern void    cgsitrf (superlu_options_t*, SuperMatrix*, int, int, int*,
 		        void *, int, int *, int *, SuperMatrix *, SuperMatrix *,
-                        SuperLUStat_t*, int *);
+                        GlobalLU_t *, SuperLUStat_t*, int *);
 extern int     cldperm(int, int, int, int [], int [], complex [],
                         int [],	float [], float []);
 extern int     ilu_csnode_dfs (const int, const int, const int *, const int *,
@@ -237,7 +241,7 @@ extern int     sp_cgemm (char *, char *, int, int, int, complex,
 			SuperMatrix *, complex *, int, complex, 
 			complex *, int);
 extern         float slamch_(char *);
-
+extern         float smach(char *);   /* from C99 standard, in float.h */
 
 /*! \brief Memory-related */
 extern int     cLUMemInit (fact_t, void *, int, int, int, int, int,
@@ -256,7 +260,7 @@ extern int     cQuerySpace (SuperMatrix *, SuperMatrix *, mem_usage_t *);
 extern int     ilu_cQuerySpace (SuperMatrix *, SuperMatrix *, mem_usage_t *);
 
 /*! \brief Auxiliary routines */
-extern void    creadhb(int *, int *, int *, complex **, int **, int **);
+extern void    creadhb(FILE *, int *, int *, int *, complex **, int **, int **);
 extern void    creadrb(int *, int *, int *, complex **, int **, int **);
 extern void    creadtriple(int *, int *, int *, complex **, int **, int **);
 extern void    cCompRow_to_CompCol(int, int, int, complex*, int*, int*,
@@ -275,6 +279,18 @@ extern void    cPrint_Dense_Matrix(char *, SuperMatrix *);
 extern void    cprint_lu_col(char *, int, int, int *, GlobalLU_t *);
 extern int     print_double_vec(char *, int, double *);
 extern void    check_tempv(int, complex *);
+
+/*! \brief BLAS */
+
+extern int cgemm_(const char*, const char*, const int*, const int*, const int*,
+                  const complex*, const complex*, const int*, const complex*,
+		  const int*, const complex*, complex*, const int*);
+extern int ctrsv_(char*, char*, char*, int*, complex*, int*,
+                  complex*, int*);
+extern int ctrsm_(char*, char*, char*, char*, int*, int*,
+                  complex*, complex*, int*, complex*, int*);
+extern int cgemv_(char *, int *, int *, complex *, complex *a, int *,
+                  complex *, int *, complex *, complex *, int *);
 
 #ifdef __cplusplus
   }

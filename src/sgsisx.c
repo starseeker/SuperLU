@@ -396,7 +396,7 @@ sgsisx(superlu_options_t *options, SuperMatrix *A, int *perm_c, int *perm_r,
        SuperMatrix *L, SuperMatrix *U, void *work, int lwork,
        SuperMatrix *B, SuperMatrix *X,
        float *recip_pivot_growth, float *rcond,
-       mem_usage_t *mem_usage, SuperLUStat_t *stat, int *info)
+       GlobalLU_t *Glu, mem_usage_t *mem_usage, SuperLUStat_t *stat, int *info)
 {
 
     DNformat  *Bstore, *Xstore;
@@ -440,7 +440,7 @@ sgsisx(superlu_options_t *options, SuperMatrix *A, int *perm_c, int *perm_r,
     } else {
 	rowequ = lsame_(equed, "R") || lsame_(equed, "B");
 	colequ = lsame_(equed, "C") || lsame_(equed, "B");
-	smlnum = slamch_("Safe minimum");
+	smlnum = smach("Safe minimum");  /* lamch_("Safe minimum"); */
 	bignum = 1. / smlnum;
     }
 
@@ -499,7 +499,7 @@ sgsisx(superlu_options_t *options, SuperMatrix *A, int *perm_c, int *perm_r,
     }
     if (*info != 0) {
 	i = -(*info);
-	xerbla_("sgsisx", &i);
+	input_error("sgsisx", &i);
 	return;
     }
 
@@ -614,7 +614,7 @@ sgsisx(superlu_options_t *options, SuperMatrix *A, int *perm_c, int *perm_r,
 	/* Compute the LU factorization of A*Pc. */
 	t0 = SuperLU_timer_();
 	sgsitrf(options, &AC, relax, panel_size, etree, work, lwork,
-                perm_c, perm_r, L, U, stat, info);
+                perm_c, perm_r, L, U, Glu, stat, info);
 	utime[FACT] = SuperLU_timer_() - t0;
 
 	if ( lwork == -1 ) {
@@ -712,7 +712,8 @@ sgsisx(superlu_options_t *options, SuperMatrix *A, int *perm_c, int *perm_r,
 
     if ( options->ConditionNumber ) {
 	/* The matrix is singular to working precision. */
-	if ( *rcond < slamch_("E") && *info == 0) *info = A->ncol + 1;
+	/* if ( *rcond < slamch_("E") && *info == 0) *info = A->ncol + 1; */
+	if ( *rcond < smach("E") && *info == 0) *info = A->ncol + 1;
     }
 
     if ( nofact ) {

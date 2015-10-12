@@ -15,10 +15,11 @@
 #define abs(a) ((a) >= 0) ? (a) : -(a)
 #define min(a,b) ((a) < (b)) ? (a) : (b)
 
+#if 0
 /* Table of constant values */
-
 static int_t c__1 = 1;
 static int_t c__2 = 2;
+#endif
 
 /* CCCC COPYRIGHT (c) 1999  Council for the Central Laboratory of the */
 /* CCCC Research Councils.    All rights reserved. */
@@ -43,7 +44,7 @@ static int_t c__2 = 2;
 
 /* The user shall not pass this code directly to a third party without the */
 /* express prior consent of the authors.  Users wanting to licence their */
-/* own copy of these routines should send email to hsl@aeat.co.uk */
+/* own copy of these routines should send email to hsl@stfc.ac.uk */
 
 /* None of the comments from the Copyright notice up to and including this */
 /* one shall be removed or altered in any way. */
@@ -333,14 +334,14 @@ static int_t c__2 = 2;
     --info;
 
     /* Function Body */
-    rinf = dlamch_("Overflow");
+    rinf = dmach("Overflow");
 /* Check value of JOB */
     if (*job < 1 || *job > 5) {
 	info[1] = -1;
 	info[2] = *job;
 	if (icntl[1] >= 0) {
-	    printf(" ****** Error in MC64A/AD. INFO(1) = %2d", info[1],
-		   " because JOB = %d\n", *job);
+	    printf(" ****** Error in MC64A/AD. INFO(1) = %2d"
+		   " because JOB = %d\n", info[1], *job);
 	}
 	goto L99;
     }
@@ -349,8 +350,8 @@ static int_t c__2 = 2;
 	info[1] = -2;
 	info[2] = *n;
 	if (icntl[1] >= 0) {
-	    printf(" ****** Error in MC64A/AD. INFO(1) = %2d", info[1],
-		   " because N = %d\n", *job);
+	    printf(" ****** Error in MC64A/AD. INFO(1) = %2d"
+		   " because N = %d\n", info[1], *job);
 	}
 	goto L99;
     }
@@ -359,8 +360,8 @@ static int_t c__2 = 2;
 	info[1] = -3;
 	info[2] = *ne;
 	if (icntl[1] >= 0) {
-	    printf(" ****** Error in MC64A/AD. INFO(1) = %2d", info[1],
-		   " because NE = %d\n", *job);
+	    printf(" ****** Error in MC64A/AD. INFO(1) = %2d"
+		   " because NE = %d\n", info[1], *job);
 	}
 	goto L99;
     }
@@ -384,8 +385,8 @@ static int_t c__2 = 2;
 	info[1] = -4;
 	info[2] = k;
 	if (icntl[1] >= 0) {
-	    printf(" ****** Error in MC64A/AD. INFO(1) = %2d", info[1],
-		   " LIW too small, must be at least %8d\n", k);
+	    printf(" ****** Error in MC64A/AD. INFO(1) = %2d"
+		   " LIW too small, must be at least %8d\n", info[1], k);
 	}
 	goto L99;
     }
@@ -408,8 +409,8 @@ static int_t c__2 = 2;
 	    info[1] = -5;
 	    info[2] = k;
 	    if (icntl[1] >= 0) {
-		printf(" ****** Error in MC64A/AD. INFO(1) = %2d", info[1],
-		       " LDW too small, must be at least %8d\n", k);
+		printf(" ****** Error in MC64A/AD. INFO(1) = %2d"
+		       " LDW too small, must be at least %8d\n", info[1], k);
 	    }
 	    goto L99;
 	}
@@ -431,9 +432,9 @@ static int_t c__2 = 2;
 		    info[1] = -6;
 		    info[2] = j;
 		    if (icntl[1] >= 0) {
-			printf(" ****** Error in MC64A/AD. INFO(1) = %2d",
-			       info[1], " Column %8d", j, 
-			       " contains an entry with invalid row index %8d\n", i__);
+			printf(" ****** Error in MC64A/AD. INFO(1) = %2d Column %8d"
+			       " contains an entry with invalid row index %8d\n",
+			       info[1], j, i__);
 		    }
 		    goto L99;
 		}
@@ -442,9 +443,10 @@ static int_t c__2 = 2;
 		    info[1] = -7;
 		    info[2] = j;
 		    if (icntl[1] >= 0) {
-			printf(" ****** Error in MC64A/AD. INFO(1) = %2d", info[1],
-			       "        Column %8d", j,
-			       " contains two or more entries with row index %8d\n", i__);
+			printf(" ****** Error in MC64A/AD. INFO(1) = %2d"
+			       "        Column %8d"
+			       " contains two or more entries with row index %8d\n",
+			       info[1], j, i__);
 		    }
 		    goto L99;
 		} else {
@@ -613,22 +615,22 @@ L90:
 /* Matrix is structurally singular, return with warning */
 	info[1] = 1;
 	if (icntl[2] >= 0) {
-	    printf(" ****** Warning from MC64A/AD. INFO(1) = %2d", info[1],
-		   " The matrix is structurally singular.\n");
+	    printf(" ****** Warning from MC64A/AD. INFO(1) = %2d"
+		   " The matrix is structurally singular.\n", info[1]);
 	}
     }
     if (info[1] == 2) {
 /* Scaling factors are large, return with warning */
 	if (icntl[2] >= 0) {
-	    printf(" ****** Warning from MC64A/AD. INFO(1) = %2d\n", info[1],
-		   "        Some scaling factors may be too large.\n");
+	    printf(" ****** Warning from MC64A/AD. INFO(1) = %2d\n"
+		   "        Some scaling factors may be too large.\n", info[1]);
 	}
     }
 /* Print diagnostics on output */
     if (icntl[3] >= 0) {
 	printf(" ****** Output parameters for MC64A/AD: INFO(1:2)  = %8d%8d\n",
 	       info[1], info[2]);
-	printf(" NUM        = ", *num);
+	printf(" NUM        = %8d", *num);
 	printf(" CPERM(1:N) = ");
 	for (j=1; j<=*n; ++j) {
 	    printf("%8d", cperm[j]);
@@ -661,6 +663,7 @@ L99:
     /* System generated locals */
     int_t i__1, i__2, i__3;
     double d__1, d__2, d__3;
+    int_t c__1 = 1;
 
     /* Local variables */
     int_t i__, j, k;
@@ -706,8 +709,8 @@ L99:
 /* Local parameters */
 /* Intrinsic functions */
 /* External subroutines and/or functions */
-/*      EXTERNAL FD05AD,MC64DD,MC64ED,MC64FD, DLAMCH */
-/*      DOUBLE PRECISION FD05AD, DLAMCH */
+/*      EXTERNAL FD05AD,MC64DD,MC64ED,MC64FD, DMACH */
+/*      DOUBLE PRECISION FD05AD, DMACH */
 /* Set RINF to largest positive real number */
 /* XSL  RINF = FD05AD(5) */
     /* Parameter adjustments */
@@ -722,7 +725,7 @@ L99:
     --irn;
 
     /* Function Body */
-    rinf = dlamch_("Overflow");
+    rinf = dmach("Overflow");
 /* Initialization */
     *num = 0;
     bv = rinf;
@@ -1086,6 +1089,7 @@ L1000:
 {
     /* System generated locals */
     int_t i__1;
+    int_t c__1 = 1;
 
     /* Local variables */
     double di;
@@ -1616,7 +1620,7 @@ L100:
     --irn;
 
     /* Function Body */
-    rinf = dlamch_("Overflow");
+    rinf = dmach("Overflow");
 /* Compute a first maximum matching from scratch on whole matrix. */
     i__1 = *n;
     for (j = 1; j <= i__1; ++j) {
@@ -2160,7 +2164,7 @@ L101:
 	double *d__)
 {
     /* System generated locals */
-    int_t i__1, i__2, i__3;
+    int_t i__1, i__2, i__3, c__2 = 2;
 
     /* Local variables */
     int_t i__, j, k, i0, k0, k1, k2, q0;
@@ -2231,7 +2235,7 @@ L101:
     --irn;
 
     /* Function Body */
-    rinf = dlamch_("Overflow");
+    rinf = dmach("Overflow");
 /* Initialization */
     *num = 0;
     i__1 = *n;

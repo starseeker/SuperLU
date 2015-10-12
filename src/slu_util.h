@@ -141,7 +141,7 @@ typedef unsigned char Logical;
  *             prior to this one. Therefore, this factorization will reuse
  *             both row and column scaling factors R and C, both row and
  *             column permutation vectors perm_r and perm_c, and the
- *             data structure set up from the previous symbolic factorization.
+ *             L & U data structures set up from the previous factorization.
  *        = FACTORED: On entry, L, U, perm_r and perm_c contain the 
  *              factored form of A. If DiagScale is not NOEQUIL, the matrix
  *              A has been equilibrated with scaling factors R and C.
@@ -314,6 +314,8 @@ typedef struct {
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+extern int     input_error(char *, int *);
 
 extern void    Destroy_SuperMatrix_Store(SuperMatrix *);
 extern void    Destroy_CompCol_Matrix(SuperMatrix *);
