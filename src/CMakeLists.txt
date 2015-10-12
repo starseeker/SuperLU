@@ -33,7 +33,7 @@ set(ALLAUX_LU_SRCS
   sp_coletree.c sp_preorder.c sp_ienv.c relax_snode.c
   heap_relax_snode.c colamd.c ilu_relax_snode.c 
   ilu_heap_relax_snode.c mark_relax.c mc64ad.c 
-  qselect.c
+  qselect.c input_error.c
   )
 
 # Per original makefiles, override target level settings and
@@ -42,9 +42,9 @@ set(ALLAUX_LU_SRCS
 # default optimizmation setting to the end of the compile flags.)
 set_source_files_properties(superlu_timer.c PROPERTIES COMPILE_FLAGS "-O0")
 
-set(SINGLE_LA_SRCS slacon.c)
+set(SINGLE_LA_SRCS slacon.c slacon2.c)
 
-set(SINGLE_AUX_SRCS slamch.c)
+set(SINGLE_AUX_SRCS slamch.c smach.c)
 # Per original makefiles, override target level settings and
 # don't optimize this file's compilation (The "last" optimization
 # flag on the gcc command line is the one gcc uses, so append the
@@ -64,9 +64,9 @@ set(SINGLE_LU_SRCS
   sdiagonal.c
   )
 
-set(DOUBLE_LA_SRCS dlacon.c)
+set(DOUBLE_LA_SRCS dlacon.c dlacon2.c)
 
-set(DOUBLE_AUX_SRCS dlamch.c)
+set(DOUBLE_AUX_SRCS dlamch.c dmach.c)
 
 # Per original makefiles, override target level settings and
 # don't optimize this file's compilation (The "last" optimization
@@ -88,8 +88,8 @@ set(DOUBLE_LU_SRCS
   )
 
 
-set(COMPLEX_LA_SRCS clacon.c scsum1.c icmax1.c)
-set(COMPLEX_AUX_SRCS slamch.c)
+set(COMPLEX_LA_SRCS clacon.c clacon2.c scsum1.c icmax1.c)
+set(COMPLEX_AUX_SRCS slamch.c smach.c)
 set(COMPLEX_LU_SRCS
   scomplex.c cgssv.c cgssvx.c csp_blas2.c csp_blas3.c cgscon.c 
   clangs.c cgsequ.c claqgs.c cpivotgrowth.c cgsrfs.c cgstrf.c 
@@ -102,8 +102,8 @@ set(COMPLEX_LU_SRCS
   cdiagonal.c
   )
 
-set(COMPLEX16_LA_SRCS zlacon.c dzsum1.c izmax1.c)
-set(COMPLEX16_AUX_SRCS dlamch.c)
+set(COMPLEX16_LA_SRCS zlacon.c zlacon2.c dzsum1.c izmax1.c)
+set(COMPLEX16_AUX_SRCS dlamch.c dmach.c)
 set(COMPLEX16_LU_SRCS 
   dcomplex.c zgssv.c zgssvx.c zsp_blas2.c zsp_blas3.c zgscon.c 
   zlangs.c zgsequ.c zlaqgs.c zpivotgrowth.c zgsrfs.c zgstrf.c 
