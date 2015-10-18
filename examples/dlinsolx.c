@@ -18,6 +18,8 @@ int main(int argc, char *argv[])
     NCformat       *Astore;
     NCformat       *Ustore;
     SCformat       *Lstore;
+    GlobalLU_t	   Glu; /* facilitate multiple factorizations with 
+                           SamePattern_SameRowPerm                  */
     double         *a;
     int            *asub, *xa;
     int            *perm_r; /* row permutations from partial pivoting */
@@ -33,6 +35,8 @@ int main(int argc, char *argv[])
     mem_usage_t    mem_usage;
     superlu_options_t options;
     SuperLUStat_t stat;
+    FILE           *fp = stdin;
+
     extern void  parse_command_line();
 
 #if ( DEBUGlevel>=1 )
@@ -79,7 +83,7 @@ int main(int argc, char *argv[])
     }
 
     /* Read matrix A from a file in Harwell-Boeing format.*/
-    dreadhb(&m, &n, &nnz, &a, &asub, &xa);
+    dreadhb(fp, &m, &n, &nnz, &a, &asub, &xa);
     
     dCreate_CompCol_Matrix(&A, m, n, nnz, a, asub, xa, SLU_NC, SLU_D, SLU_GE);
     Astore = A.Store;
@@ -115,7 +119,7 @@ int main(int argc, char *argv[])
     
     dgssvx(&options, &A, perm_c, perm_r, etree, equed, R, C,
            &L, &U, work, lwork, &B, &X, &rpg, &rcond, ferr, berr,
-           &mem_usage, &stat, &info);
+           &Glu, &mem_usage, &stat, &info);
 
     printf("dgssvx(): info %d\n", info);
 

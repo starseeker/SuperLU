@@ -24,7 +24,7 @@
 static void
 parse_command_line(int argc, char *argv[], char *matrix_type,
 		   int *n, int *w, int *relax, int *nrhs, int *maxsuper,
-		   int *rowblk, int *colblk, int *lwork, double *u);
+		   int *rowblk, int *colblk, int *lwork, double *u, FILE **fp);
 
 main(int argc, char *argv[])
 {
@@ -45,6 +45,7 @@ main(int argc, char *argv[])
     int            *xa, *xa_save;
     SuperMatrix  A, B, X, L, U;
     SuperMatrix  ASAV, AC;
+    GlobalLU_t   Glu; /* Not needed on return. */
     mem_usage_t    mem_usage;
     int            *perm_r; /* row permutation from partial pivoting */
     int            *perm_c, *pc_save; /* column permutation */
@@ -79,6 +80,7 @@ main(int argc, char *argv[])
     SuperLUStat_t  stat;
     static char    matrix_type[8];
     static char    equed[1], path[4], sym[1], dist[1];
+    FILE           *fp;
 
     /* Fixed set of parameters */
     int            iseed[]  = {1988, 1989, 1990, 1991};
@@ -123,7 +125,7 @@ main(int argc, char *argv[])
     strcpy(matrix_type, "LA");
     parse_command_line(argc, argv, matrix_type, &n,
 		       &panel_size, &relax, &nrhs, &maxsuper,
-		       &rowblk, &colblk, &lwork, &u);
+		       &rowblk, &colblk, &lwork, &u, &fp);
     if ( lwork > 0 ) {
 	work = SUPERLU_MALLOC(lwork);
 	if ( !work ) {
@@ -152,7 +154,7 @@ main(int argc, char *argv[])
     } else {
 	/* Read a sparse matrix */
 	fimat = nimat = 0;
-	zreadhb(&m, &n, &nnz, &a, &asub, &xa);
+	zreadhb(fp, &m, &n, &nnz, &a, &asub, &xa);
     }
 
     zallocateA(n, nnz, &a_save, &asub_save, &xa_save);
@@ -304,7 +306,7 @@ main(int argc, char *argv[])
 			/* Factor the matrix AC. */
 			zgstrf(&options, &AC, relax, panel_size,
                                etree, work, lwork, perm_c, perm_r, &L, &U,
-                               &stat, &info);
+                               &Glu, &stat, &info);
 
 			if ( info ) { 
                             printf("** First factor: info %d, equed %c\n",
@@ -398,7 +400,8 @@ main(int argc, char *argv[])
 			   and error bounds using zgssvx.      */
 			zgssvx(&options, &A, perm_c, perm_r, etree,
                                equed, R, C, &L, &U, work, lwork, &B, &X, &rpg,
-                               &rcond, ferr, berr, &mem_usage, &stat, &info);
+                               &rcond, ferr, berr, &Glu,
+			       &mem_usage, &stat, &info);
 
 			if ( info && info != izero ) {
 			    printf(FMT3, "zgssvx",
@@ -465,13 +468,17 @@ main(int argc, char *argv[])
     if ( !info ) {
 	PrintPerf(&L, &U, &mem_usage, rpg, rcond, ferr, berr, equed);
     }
-#endif    
+#endif
+        Destroy_SuperMatrix_Store(&A);
+        Destroy_SuperMatrix_Store(&ASAV);
+        StatFree(&stat);
 
     } /* for imat ... */
 
     /* Print a summary of the results. */
     PrintSumm("ZGE", nfail, nrun, nerrs);
 
+    if ( strcmp(matrix_type, "LA") == 0 ) SUPERLU_FREE (Afull);
     SUPERLU_FREE (rhsb);
     SUPERLU_FREE (bsav);
     SUPERLU_FREE (solx);    
@@ -488,14 +495,18 @@ main(int argc, char *argv[])
     SUPERLU_FREE (wwork);
     Destroy_SuperMatrix_Store(&B);
     Destroy_SuperMatrix_Store(&X);
+#if 0
     Destroy_CompCol_Matrix(&A);
     Destroy_CompCol_Matrix(&ASAV);
+#else
+    SUPERLU_FREE(a); SUPERLU_FREE(asub); SUPERLU_FREE(xa);
+    SUPERLU_FREE(a_save); SUPERLU_FREE(asub_save); SUPERLU_FREE(xa_save);
+#endif
     if ( lwork > 0 ) {
 	SUPERLU_FREE (work);
 	Destroy_SuperMatrix_Store(&L);
 	Destroy_SuperMatrix_Store(&U);
     }
-    StatFree(&stat);
 
     return 0;
 }
@@ -506,12 +517,12 @@ main(int argc, char *argv[])
 static void
 parse_command_line(int argc, char *argv[], char *matrix_type,
 		   int *n, int *w, int *relax, int *nrhs, int *maxsuper,
-		   int *rowblk, int *colblk, int *lwork, double *u)
+		   int *rowblk, int *colblk, int *lwork, double *u, FILE **fp)
 {
     int c;
     extern char *optarg;
 
-    while ( (c = getopt(argc, argv, "ht:n:w:r:s:m:b:c:l:")) != EOF ) {
+    while ( (c = getopt(argc, argv, "ht:n:w:r:s:m:b:c:l:u:f:")) != EOF ) {
 	switch (c) {
 	  case 'h':
 	    printf("Options:\n");
@@ -539,6 +550,12 @@ parse_command_line(int argc, char *argv[], char *matrix_type,
 	            break;
 	  case 'u': *u = atof(optarg); 
 	            break;
+          case 'f':
+                    if ( !(*fp = fopen(optarg, "r")) ) {
+                        ABORT("File does not exist");
+                    }
+                    printf(".. test sparse matrix in file: %s\n", optarg);
+                    break;
   	}
     }
 }

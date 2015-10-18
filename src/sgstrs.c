@@ -128,7 +128,7 @@ sgstrs (trans_t trans, SuperMatrix *L, SuperMatrix *U,
 	*info = -6;
     if ( *info ) {
 	i = -(*info);
-	xerbla_("sgstrs", &i);
+	input_error("sgstrs", &i);
 	return;
     }
 

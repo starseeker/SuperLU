@@ -157,8 +157,9 @@ dgsrfs(trans_t trans, SuperMatrix *A, SuperMatrix *L, SuperMatrix *U,
     double   *work;
     double   *rwork;
     int      *iwork;
+    int      isave[3];
 
-    extern int dlacon_(int *, double *, double *, int *, double *, int *);
+    extern int dlacon2_(int *, double *, double *, int *, double *, int *, int []);
 #ifdef _CRAY
     extern int SCOPY(int *, double *, int *, double *, int *);
     extern int SSAXPY(int *, double *, double *, int *, double *, int *);
@@ -198,7 +199,7 @@ dgsrfs(trans_t trans, SuperMatrix *A, SuperMatrix *L, SuperMatrix *U,
 	*info = -11;
     if (*info != 0) {
 	i = -(*info);
-	xerbla_("dgsrfs", &i);
+	input_error("dgsrfs", &i);
 	return;
     }
 
@@ -231,8 +232,9 @@ dgsrfs(trans_t trans, SuperMatrix *A, SuperMatrix *L, SuperMatrix *U,
 
     /* NZ = maximum number of nonzero elements in each row of A, plus 1 */
     nz     = A->ncol + 1;
-    eps    = dlamch_("Epsilon");
-    safmin = dlamch_("Safe minimum");
+    eps    = dmach("Epsilon");
+    safmin = dmach("Safe minimum");
+
     /* Set SAFE1 essentially to be the underflow threshold times the
        number of additions in each row. */
     safe1  = nz * safmin;
@@ -362,7 +364,7 @@ dgsrfs(trans_t trans, SuperMatrix *A, SuperMatrix *L, SuperMatrix *U,
           is incremented by SAFE1 if the i-th component of   
           abs(op(A))*abs(X) + abs(B) is less than SAFE2.   
 
-          Use DLACON to estimate the infinity-norm of the matrix   
+          Use DLACON2 to estimate the infinity-norm of the matrix   
              inv(op(A)) * diag(W),   
           where W = abs(R) + NZ*EPS*( abs(op(A))*abs(X)+abs(B) ))) */
 	
@@ -396,8 +398,8 @@ dgsrfs(trans_t trans, SuperMatrix *A, SuperMatrix *L, SuperMatrix *U,
 	kase = 0;
 
 	do {
-	    dlacon_(&A->nrow, &work[A->nrow], work,
-		    &iwork[A->nrow], &ferr[j], &kase);
+	    dlacon2_(&A->nrow, &work[A->nrow], work,
+		    &iwork[A->nrow], &ferr[j], &kase, isave);
 	    if (kase == 0) break;
 
 	    if (kase == 1) {

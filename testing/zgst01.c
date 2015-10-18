@@ -82,8 +82,16 @@ int zgst01(int m, int n, SuperMatrix *A, SuperMatrix *L,
     Ustore = U->Store;
     Uval = Ustore->nzval;
 
+    colbeg = intMalloc(n);
+    colend = intMalloc(n);
+
+        for (i = 0; i < n; i++) {
+            colbeg[perm_c[i]] = Astore->colptr[i]; 
+	    colend[perm_c[i]] = Astore->colptr[i+1];
+        }
+	
     /* Determine EPS and the norm of A. */
-    eps = dlamch_("Epsilon");
+    eps = dmach("Epsilon");
     anorm = zlangs("1", A);
     cnorm = 0.;
 
@@ -128,13 +136,6 @@ int zgst01(int m, int n, SuperMatrix *A, SuperMatrix *L,
 
 	/* Now compute A[k] - (L*U)[k] (Both matrices may be permuted.) */
 
-	colbeg = intMalloc(n);
-	colend = intMalloc(n);
-	for (i = 0; i < n; i++) {
-	    colbeg[perm_c[i]] = Astore->colptr[i]; 
-	    colend[perm_c[i]] = Astore->colptr[i+1];
-	}
-	
 	for (i = colbeg[k]; i < colend[k]; ++i) {
 	    arow = Astore->rowind[i];
 	    work[perm_r[arow]].r += Aval[i].r;

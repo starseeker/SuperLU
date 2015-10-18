@@ -157,8 +157,9 @@ sgsrfs(trans_t trans, SuperMatrix *A, SuperMatrix *L, SuperMatrix *U,
     float   *work;
     float   *rwork;
     int      *iwork;
+    int      isave[3];
 
-    extern int slacon_(int *, float *, float *, int *, float *, int *);
+    extern int slacon2_(int *, float *, float *, int *, float *, int *, int []);
 #ifdef _CRAY
     extern int SCOPY(int *, float *, int *, float *, int *);
     extern int SSAXPY(int *, float *, float *, int *, float *, int *);
@@ -198,7 +199,7 @@ sgsrfs(trans_t trans, SuperMatrix *A, SuperMatrix *L, SuperMatrix *U,
 	*info = -11;
     if (*info != 0) {
 	i = -(*info);
-	xerbla_("sgsrfs", &i);
+	input_error("sgsrfs", &i);
 	return;
     }
 
@@ -231,8 +232,9 @@ sgsrfs(trans_t trans, SuperMatrix *A, SuperMatrix *L, SuperMatrix *U,
 
     /* NZ = maximum number of nonzero elements in each row of A, plus 1 */
     nz     = A->ncol + 1;
-    eps    = slamch_("Epsilon");
-    safmin = slamch_("Safe minimum");
+    eps    = smach("Epsilon");
+    safmin = smach("Safe minimum");
+
     /* Set SAFE1 essentially to be the underflow threshold times the
        number of additions in each row. */
     safe1  = nz * safmin;
@@ -362,7 +364,7 @@ sgsrfs(trans_t trans, SuperMatrix *A, SuperMatrix *L, SuperMatrix *U,
           is incremented by SAFE1 if the i-th component of   
           abs(op(A))*abs(X) + abs(B) is less than SAFE2.   
 
-          Use SLACON to estimate the infinity-norm of the matrix   
+          Use SLACON2 to estimate the infinity-norm of the matrix   
              inv(op(A)) * diag(W),   
           where W = abs(R) + NZ*EPS*( abs(op(A))*abs(X)+abs(B) ))) */
 	
@@ -396,8 +398,8 @@ sgsrfs(trans_t trans, SuperMatrix *A, SuperMatrix *L, SuperMatrix *U,
 	kase = 0;
 
 	do {
-	    slacon_(&A->nrow, &work[A->nrow], work,
-		    &iwork[A->nrow], &ferr[j], &kase);
+	    slacon2_(&A->nrow, &work[A->nrow], work,
+		    &iwork[A->nrow], &ferr[j], &kase, isave);
 	    if (kase == 0) break;
 
 	    if (kase == 1) {

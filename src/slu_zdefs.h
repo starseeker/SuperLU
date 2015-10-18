@@ -79,6 +79,9 @@ typedef int int_t; /* default */
 
 #include <math.h>
 #include <limits.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
 #include "slu_Cnames.h"
 #include "supermatrix.h"
 #include "slu_util.h"
@@ -122,7 +125,7 @@ zgssvx(superlu_options_t *, SuperMatrix *, int *, int *, int *,
        char *, double *, double *, SuperMatrix *, SuperMatrix *,
        void *, int, SuperMatrix *, SuperMatrix *,
        double *, double *, double *, double *,
-       mem_usage_t *, SuperLUStat_t *, int *);
+       GlobalLU_t *, mem_usage_t *, SuperLUStat_t *, int *);
     /* ILU */
 extern void
 zgsisv(superlu_options_t *, SuperMatrix *, int *, int *, SuperMatrix *,
@@ -131,7 +134,7 @@ extern void
 zgsisx(superlu_options_t *, SuperMatrix *, int *, int *, int *,
        char *, double *, double *, SuperMatrix *, SuperMatrix *,
        void *, int, SuperMatrix *, SuperMatrix *, double *, double *,
-       mem_usage_t *, SuperLUStat_t *, int *);
+       GlobalLU_t *, mem_usage_t *, SuperLUStat_t *, int *);
 
 
 /*! \brief Supernodal LU factor related */
@@ -160,7 +163,8 @@ extern void    fixupL (const int, const int *, GlobalLU_t *);
 extern void    zallocateA (int, int, doublecomplex **, int **, int **);
 extern void    zgstrf (superlu_options_t*, SuperMatrix*,
                        int, int, int*, void *, int, int *, int *, 
-                       SuperMatrix *, SuperMatrix *, SuperLUStat_t*, int *);
+                       SuperMatrix *, SuperMatrix *, GlobalLU_t *,
+		       SuperLUStat_t*, int *);
 extern int     zsnode_dfs (const int, const int, const int *, const int *,
 			     const int *, int *, int *, GlobalLU_t *);
 extern int     zsnode_bmod (const int, const int, const int, doublecomplex *,
@@ -191,7 +195,7 @@ extern void    zgstrs (trans_t, SuperMatrix *, SuperMatrix *, int *, int *,
 /* ILU */
 extern void    zgsitrf (superlu_options_t*, SuperMatrix*, int, int, int*,
 		        void *, int, int *, int *, SuperMatrix *, SuperMatrix *,
-                        SuperLUStat_t*, int *);
+                        GlobalLU_t *, SuperLUStat_t*, int *);
 extern int     zldperm(int, int, int, int [], int [], doublecomplex [],
                         int [],	double [], double []);
 extern int     ilu_zsnode_dfs (const int, const int, const int *, const int *,
@@ -237,7 +241,7 @@ extern int     sp_zgemm (char *, char *, int, int, int, doublecomplex,
 			SuperMatrix *, doublecomplex *, int, doublecomplex, 
 			doublecomplex *, int);
 extern         double dlamch_(char *);
-
+extern         double dmach(char *);   /* from C99 standard, in float.h */
 
 /*! \brief Memory-related */
 extern int     zLUMemInit (fact_t, void *, int, int, int, int, int,
@@ -256,7 +260,7 @@ extern int     zQuerySpace (SuperMatrix *, SuperMatrix *, mem_usage_t *);
 extern int     ilu_zQuerySpace (SuperMatrix *, SuperMatrix *, mem_usage_t *);
 
 /*! \brief Auxiliary routines */
-extern void    zreadhb(int *, int *, int *, doublecomplex **, int **, int **);
+extern void    zreadhb(FILE *, int *, int *, int *, doublecomplex **, int **, int **);
 extern void    zreadrb(int *, int *, int *, doublecomplex **, int **, int **);
 extern void    zreadtriple(int *, int *, int *, doublecomplex **, int **, int **);
 extern void    zCompRow_to_CompCol(int, int, int, doublecomplex*, int*, int*,
@@ -275,6 +279,18 @@ extern void    zPrint_Dense_Matrix(char *, SuperMatrix *);
 extern void    zprint_lu_col(char *, int, int, int *, GlobalLU_t *);
 extern int     print_double_vec(char *, int, double *);
 extern void    check_tempv(int, doublecomplex *);
+
+/*! \brief BLAS */
+
+extern int zgemm_(const char*, const char*, const int*, const int*, const int*,
+                  const doublecomplex*, const doublecomplex*, const int*, const doublecomplex*,
+		  const int*, const doublecomplex*, doublecomplex*, const int*);
+extern int ztrsv_(char*, char*, char*, int*, doublecomplex*, int*,
+                  doublecomplex*, int*);
+extern int ztrsm_(char*, char*, char*, char*, int*, int*,
+                  doublecomplex*, doublecomplex*, int*, doublecomplex*, int*);
+extern int zgemv_(char *, int *, int *, doublecomplex *, doublecomplex *a, int *,
+                  doublecomplex *, int *, doublecomplex *, doublecomplex *, int *);
 
 #ifdef __cplusplus
   }

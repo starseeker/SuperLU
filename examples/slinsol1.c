@@ -26,6 +26,7 @@ int main(int argc, char *argv[])
     mem_usage_t   mem_usage;
     superlu_options_t options;
     SuperLUStat_t stat;
+    FILE     *fp = stdin;
     
 #if ( DEBUGlevel>=1 )
     CHECK_MALLOC("Enter main()");
@@ -51,7 +52,7 @@ int main(int argc, char *argv[])
     options.DiagPivotThresh = 0.001;
 
     /* Read the matrix in Harwell-Boeing format. */
-    sreadhb(&m, &n, &nnz, &a, &asub, &xa);
+    sreadhb(fp, &m, &n, &nnz, &a, &asub, &xa);
 
     sCreate_CompCol_Matrix(&A, m, n, nnz, a, asub, xa, SLU_NC, SLU_S, SLU_GE);
     Astore = A.Store;

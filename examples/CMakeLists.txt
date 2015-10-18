@@ -16,6 +16,7 @@ set(SLINEXM1	slinsol1.c)
 set(SLINXEXM 	slinsolx.c)
 set(SLINXEXM1 	slinsolx1.c)
 set(SLINXEXM2	slinsolx2.c)
+set(SLINXEXM3	slinsolx3.c)
 set(SITSOL     	sitersol.c sfgmr.c)
 set(SITSOL1    	sitersol1.c sfgmr.c)
 
@@ -24,6 +25,7 @@ set(DLINEXM1	dlinsol1.c)
 set(DLINXEXM 	dlinsolx.c)
 set(DLINXEXM1 	dlinsolx1.c)
 set(DLINXEXM2 	dlinsolx2.c)
+set(DLINXEXM3 	dlinsolx3.c)
 set(SUPERLUEXM 	superlu.c sp_ienv.c)
 set(DITSOL	ditersol.c dfgmr.c)
 set(DITSOL1	ditersol1.c dfgmr.c)
@@ -33,6 +35,7 @@ set(CLINEXM1 	clinsol1.c)
 set(CLINXEXM 	clinsolx.c)
 set(CLINXEXM1 	clinsolx1.c)
 set(CLINXEXM2 	clinsolx2.c)
+set(CLINXEXM3 	clinsolx3.c)
 set(CITSOL	citersol.c cfgmr.c)
 set(CITSOL1	citersol1.c cfgmr.c)
 
@@ -41,6 +44,7 @@ set(ZLINEXM1 	zlinsol1.c)
 set(ZLINXEXM 	zlinsolx.c)
 set(ZLINXEXM1 	zlinsolx1.c)
 set(ZLINXEXM2 	zlinsolx2.c)
+set(ZLINXEXM3 	zlinsolx3.c)
 set(ZITSOL	zitersol.c zfgmr.c)
 set(ZITSOL1	zitersol1.c zfgmr.c)
 
@@ -58,6 +62,9 @@ target_link_libraries(slinsolx1 superlu ${BLAS_LIBRARIES} ${M_LIBRARY})
 
 add_executable(slinsolx2 ${SLINXEXM2})
 target_link_libraries(slinsolx2 superlu ${BLAS_LIBRARIES} ${M_LIBRARY}) 
+
+add_executable(slinsolx3 ${SLINXEXM3})
+target_link_libraries(slinsolx3 superlu ${BLAS_LIBRARIES} ${M_LIBRARY}) 
 
 add_executable(sitersol ${SITSOL})
 target_link_libraries(sitersol superlu ${BLAS_LIBRARIES} ${M_LIBRARY}) 
@@ -79,6 +86,9 @@ target_link_libraries(dlinsolx1 superlu ${BLAS_LIBRARIES} ${M_LIBRARY})
 
 add_executable(dlinsolx2 ${DLINXEXM2})
 target_link_libraries(dlinsolx2 superlu ${BLAS_LIBRARIES} ${M_LIBRARY}) 
+
+add_executable(dlinsolx3 ${DLINXEXM3})
+target_link_libraries(dlinsolx3 superlu ${BLAS_LIBRARIES} ${M_LIBRARY}) 
 
 add_executable(superlu_example ${SUPERLUEXM})
 target_link_libraries(superlu_example superlu ${BLAS_LIBRARIES} ${M_LIBRARY}) 
@@ -104,6 +114,9 @@ target_link_libraries(clinsolx1 superlu ${BLAS_LIBRARIES} ${M_LIBRARY})
 add_executable(clinsolx2 ${CLINXEXM2})
 target_link_libraries(clinsolx2 superlu ${BLAS_LIBRARIES} ${M_LIBRARY}) 
 
+add_executable(clinsolx3 ${CLINXEXM3})
+target_link_libraries(clinsolx3 superlu ${BLAS_LIBRARIES} ${M_LIBRARY}) 
+
 add_executable(citersol ${CITSOL})
 target_link_libraries(citersol superlu ${BLAS_LIBRARIES} ${M_LIBRARY}) 
 
@@ -124,6 +137,9 @@ target_link_libraries(zlinsolx1 superlu ${BLAS_LIBRARIES} ${M_LIBRARY})
 
 add_executable(zlinsolx2 ${ZLINXEXM2})
 target_link_libraries(zlinsolx2 superlu ${BLAS_LIBRARIES} ${M_LIBRARY}) 
+
+add_executable(zlinsolx3 ${ZLINXEXM3})
+target_link_libraries(zlinsolx3 superlu ${BLAS_LIBRARIES} ${M_LIBRARY}) 
 
 add_executable(zitersol ${ZITSOL})
 target_link_libraries(zitersol superlu ${BLAS_LIBRARIES} ${M_LIBRARY}) 

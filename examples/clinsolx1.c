@@ -1,9 +1,11 @@
 
 /*
- * -- SuperLU routine (version 3.0) --
+ * -- SuperLU routine (version 5.0) --
  * Univ. of California Berkeley, Xerox Palo Alto Research Center,
  * and Lawrence Berkeley National Lab.
  * October 15, 2003
+ *
+ * Last update: July 10, 2015
  *
  */
 #include "slu_cdefs.h"
@@ -31,6 +33,8 @@ int main(int argc, char *argv[])
     NCformat       *Astore;
     NCformat       *Ustore;
     SCformat       *Lstore;
+    GlobalLU_t	   Glu; /* facilitate multiple factorizations with 
+                           SamePattern_SameRowPerm                  */
     complex         *a;
     int            *asub, *xa;
     int            *perm_c; /* column permutation vector */
@@ -46,6 +50,8 @@ int main(int argc, char *argv[])
     mem_usage_t    mem_usage;
     superlu_options_t options;
     SuperLUStat_t stat;
+    FILE           *fp = stdin;
+
     extern void    parse_command_line();
 
 #if ( DEBUGlevel>=1 )
@@ -87,7 +93,7 @@ int main(int argc, char *argv[])
     }
 
     /* Read matrix A from a file in Harwell-Boeing format.*/
-    creadhb(&m, &n, &nnz, &a, &asub, &xa);
+    creadhb(fp, &m, &n, &nnz, &a, &asub, &xa);
     
     cCreate_CompCol_Matrix(&A, m, n, nnz, a, asub, xa, SLU_NC, SLU_C, SLU_GE);
     Astore = A.Store;
@@ -121,7 +127,7 @@ int main(int argc, char *argv[])
     B.ncol = 0;  /* Indicate not to solve the system */
     cgssvx(&options, &A, perm_c, perm_r, etree, equed, R, C,
            &L, &U, work, lwork, &B, &X, &rpg, &rcond, ferr, berr,
-           &mem_usage, &stat, &info);
+           &Glu, &mem_usage, &stat, &info);
 
     printf("LU factorization: cgssvx() returns info %d\n", info);
 
@@ -159,7 +165,7 @@ int main(int argc, char *argv[])
 
     cgssvx(&options, &A, perm_c, perm_r, etree, equed, R, C,
            &L, &U, work, lwork, &B, &X, &rpg, &rcond, ferr, berr,
-           &mem_usage, &stat, &info);
+           &Glu, &mem_usage, &stat, &info);
 
     printf("Triangular solve: cgssvx() returns info %d\n", info);
 

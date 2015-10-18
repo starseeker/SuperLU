@@ -3,7 +3,7 @@
  * \brief Example #2 showing how to use ILU to precondition GMRES
  *
  * <pre>
- * -- SuperLU routine (version 4.2) --
+ * -- SuperLU routine (version 5.0) --
  * Lawrence Berkeley National Laboratory
  * November, 2010
  * August, 2011
@@ -16,7 +16,7 @@
  * Note that SGSISX performs the following factorization:
  *     Pr*Dr*A*Dc*Pc^T ~= LU
  * with Pr being obtained from MC64 statically then partial pivoting
- * dybamically. On return, A is overwritten as A1 = Dr*A*Dc.
+ * dynamically. On return, A is overwritten as A1 = Dr*A*Dc.
  *
  * We need to save a copy of the original matrix A, then solve
  * the original system, A*x = B, using FGMRES.
@@ -65,7 +65,8 @@ void spsolve(int n,
     sgstrs(NOTRANS, L, U, perm_c, perm_r, &XX, stat, &info);
 #else
     sgsisx(options, A, perm_c, perm_r, NULL, equed, R, C,
-	   L, U, NULL, 0, &YY, &XX, &rpg, &rcond, mem_usage, stat, &info);
+	   L, U, NULL, 0, &YY, &XX, &rpg, &rcond, NULL,
+	   mem_usage, stat, &info);
 #endif
 }
 
@@ -95,6 +96,8 @@ int main(int argc, char *argv[])
     NCformat *Astore;
     NCformat *Ustore;
     SCformat *Lstore;
+    GlobalLU_t	   Glu; /* facilitate multiple factorizations with 
+                           SamePattern_SameRowPerm                  */
     float   *a, *a_orig;
     int      *asub, *xa, *asub_orig, *xa_orig;
     int      *etree;
@@ -110,6 +113,7 @@ int main(int argc, char *argv[])
     mem_usage_t   mem_usage;
     superlu_options_t options;
     SuperLUStat_t stat;
+    FILE    *fp = stdin;
 
     int restrt, iter, maxit, i;
     double resid;
@@ -175,7 +179,7 @@ int main(int argc, char *argv[])
 	    case 'H':
 	    case 'h':
 		printf("Input a Harwell-Boeing format matrix:\n");
-		sreadhb(&m, &n, &nnz, &a, &asub, &xa);
+		sreadhb(fp, &m, &n, &nnz, &a, &asub, &xa);
 		break;
 	    case 'R':
 	    case 'r':
@@ -244,7 +248,7 @@ int main(int argc, char *argv[])
        and pivot growth using dgsisx. */
     B.ncol = 0;  /* not to perform triangular solution */
     sgsisx(&options, &A, perm_c, perm_r, etree, equed, R, C, &L, &U, work,
-	   lwork, &B, &X, &rpg, &rcond, &mem_usage, &stat, &info);
+	   lwork, &B, &X, &rpg, &rcond, &Glu, &mem_usage, &stat, &info);
 
     /* Set RHS for GMRES. */
     if (!(b = floatMalloc(m))) ABORT("Malloc fails for b[].");

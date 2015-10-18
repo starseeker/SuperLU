@@ -129,7 +129,7 @@ cgstrs (trans_t trans, SuperMatrix *L, SuperMatrix *U,
 	*info = -6;
     if ( *info ) {
 	i = -(*info);
-	xerbla_("cgstrs", &i);
+	input_error("cgstrs", &i);
 	return;
     }
 

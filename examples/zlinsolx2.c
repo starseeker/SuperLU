@@ -1,9 +1,11 @@
 
 /*
- * -- SuperLU routine (version 3.0) --
+ * -- SuperLU routine (version 5.0) --
  * Univ. of California Berkeley, Xerox Palo Alto Research Center,
  * and Lawrence Berkeley National Lab.
  * October 15, 2003
+ *
+ * Last update: July 10, 2015
  *
  */
 #include "slu_zdefs.h"
@@ -31,6 +33,8 @@ int main(int argc, char *argv[])
     NCformat       *Astore;
     NCformat       *Ustore;
     SCformat       *Lstore;
+    GlobalLU_t	   Glu; /* facilitate multiple factorizations with 
+                           SamePattern_SameRowPerm                  */
     doublecomplex         *a, *a1;
     int            *asub, *xa, *asub1, *xa1;
     int            *perm_r; /* row permutations from partial pivoting */
@@ -46,6 +50,8 @@ int main(int argc, char *argv[])
     mem_usage_t    mem_usage;
     superlu_options_t options;
     SuperLUStat_t stat;
+    FILE 	   *fp = stdin;
+
     extern void    parse_command_line();
 
 #if ( DEBUGlevel>=1 )
@@ -87,7 +93,7 @@ int main(int argc, char *argv[])
     }
 
     /* Read matrix A from a file in Harwell-Boeing format.*/
-    zreadhb(&m, &n, &nnz, &a, &asub, &xa);
+    zreadhb(fp, &m, &n, &nnz, &a, &asub, &xa);
     if ( !(a1 = doublecomplexMalloc(nnz)) ) ABORT("Malloc fails for a1[].");
     if ( !(asub1 = intMalloc(nnz)) ) ABORT("Malloc fails for asub1[].");
     if ( !(xa1 = intMalloc(n+1)) ) ABORT("Malloc fails for xa1[].");
@@ -133,7 +139,7 @@ int main(int argc, char *argv[])
        ------------------------------------------------------------*/
     zgssvx(&options, &A, perm_c, perm_r, etree, equed, R, C,
            &L, &U, work, lwork, &B, &X, &rpg, &rcond, ferr, berr,
-           &mem_usage, &stat, &info);
+           &Glu, &mem_usage, &stat, &info);
 
     printf("First system: zgssvx() returns info %d\n", info);
 
@@ -188,7 +194,7 @@ int main(int argc, char *argv[])
 
     zgssvx(&options, &A1, perm_c, perm_r, etree, equed, R, C,
            &L, &U, work, lwork, &B1, &X, &rpg, &rcond, ferr, berr,
-           &mem_usage, &stat, &info);
+           &Glu, &mem_usage, &stat, &info);
 
     printf("\nSecond system: zgssvx() returns info %d\n", info);
 
