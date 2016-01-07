@@ -26,8 +26,6 @@ if(NOT SUPERLU_PRECISIONS)
 endif(NOT SUPERLU_PRECISIONS)
 string(TOUPPER "${SUPERLU_PRECISIONS}" SUPERLU_PRECISIONS)
 
-set(LAAUX_SRCS lsame.c xerbla.c)
-
 set(ALLAUX_LU_SRCS
   superlu_timer.c util.c memory.c get_perm_c.c mmd.c
   sp_coletree.c sp_preorder.c sp_ienv.c relax_snode.c
@@ -44,12 +42,7 @@ set_source_files_properties(superlu_timer.c PROPERTIES COMPILE_FLAGS "-O0")
 
 set(SINGLE_LA_SRCS slacon.c slacon2.c)
 
-set(SINGLE_AUX_SRCS slamch.c smach.c)
-# Per original makefiles, override target level settings and
-# don't optimize this file's compilation (The "last" optimization
-# flag on the gcc command line is the one gcc uses, so append the
-# default optimizmation setting to the end of the compile flags.)
-set_source_files_properties(slamch.c PROPERTIES COMPILE_FLAGS "-O0")
+set(SINGLE_AUX_SRCS smach.c)
 
 set(SINGLE_LU_SRCS 
   sgssv.c sgssvx.c ssp_blas2.c ssp_blas3.c sgscon.c  
@@ -66,13 +59,7 @@ set(SINGLE_LU_SRCS
 
 set(DOUBLE_LA_SRCS dlacon.c dlacon2.c)
 
-set(DOUBLE_AUX_SRCS dlamch.c dmach.c)
-
-# Per original makefiles, override target level settings and
-# don't optimize this file's compilation (The "last" optimization
-# flag on the gcc command line is the one gcc uses, so append the
-# default optimizmation setting to the end of the compile flags.)
-set_source_files_properties(slamch.c PROPERTIES COMPILE_FLAGS "-O0")
+set(DOUBLE_AUX_SRCS dmach.c)
 
 set(DOUBLE_LU_SRCS 
   dgssv.c dgssvx.c dsp_blas2.c dsp_blas3.c dgscon.c 
@@ -89,7 +76,7 @@ set(DOUBLE_LU_SRCS
 
 
 set(COMPLEX_LA_SRCS clacon.c clacon2.c scsum1.c icmax1.c)
-set(COMPLEX_AUX_SRCS slamch.c smach.c)
+set(COMPLEX_AUX_SRCS smach.c)
 set(COMPLEX_LU_SRCS
   scomplex.c cgssv.c cgssvx.c csp_blas2.c csp_blas3.c cgscon.c 
   clangs.c cgsequ.c claqgs.c cpivotgrowth.c cgsrfs.c cgstrf.c 
@@ -103,7 +90,7 @@ set(COMPLEX_LU_SRCS
   )
 
 set(COMPLEX16_LA_SRCS zlacon.c zlacon2.c dzsum1.c izmax1.c)
-set(COMPLEX16_AUX_SRCS dlamch.c dmach.c)
+set(COMPLEX16_AUX_SRCS dmach.c)
 set(COMPLEX16_LU_SRCS 
   dcomplex.c zgssv.c zgssvx.c zsp_blas2.c zsp_blas3.c zgscon.c 
   zlangs.c zgsequ.c zlaqgs.c zpivotgrowth.c zgsrfs.c zgstrf.c 
@@ -116,7 +103,7 @@ set(COMPLEX16_LU_SRCS
   zdiagonal.c
   )
 
-set(SUPERLU_SRCS ${ALLAUX_LU_SRCS} ${LAAUX_SRCS})
+set(SUPERLU_SRCS ${ALLAUX_LU_SRCS})
 foreach(precision ${SUPERLU_PRECISIONS})
   set(SUPERLU_SRCS ${SUPERLU_SRCS} ${${precision}_LA_SRCS} ${${precision}_AUX_SRCS} ${${precision}_LU_SRCS})
 endforeach(precision ${SUPERLU_PRECISIONS})
