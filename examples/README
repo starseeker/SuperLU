@@ -13,6 +13,8 @@ Here are the descriptions of the double precision examples:
     dlinsolx1: use DGSSVX to factorize A first, then solve the system later.
     dlinsolx2: use DGSSVX to solve systems repeatedly with the same sparsity
 	       pattern of matrix A.
+    dlinsolx3: use DGSSVX to solve systems repeatedly with the same sparsity
+	       pattern and similar numerical values as matrix A.
 
     superlu  : the small 5x5 sample program in Section 2 of the Users' Guide.
 
@@ -37,12 +39,14 @@ To run the real version examples, type:
         % dlinsolx  < g20.rua     (or, % slinsolx < g20.rua)
         % dlinsolx1 < g20.rua    (or, % slinsolx1 < g20.rua)
         % dlinsolx2 < g20.rua    (or, % slinsolx2 < g20.rua)
+        % dlinsolx3 < g20.rua    (or, % slinsolx3 < g20.rua)
 
 To run the complex version examples, type:
         % zlinsol < cg20.cua      (or, % clinsol < cg20.cua)
         % zlinsolx < cg20.cua     (or, % clinsolx < cg20.cua)
         % zlinsolx1 < cg20.cua    (or, % clinsolx1 < cg20.cua)
         % zlinsolx2 < cg20.cua    (or, % clinsolx2 < cg20.cua)
+        % zlinsolx3 < cg20.cua    (or, % clinsolx3 < cg20.cua)
 
 To run the ILU preconditioner example, type:
         % ditersol -h < g20.rua
