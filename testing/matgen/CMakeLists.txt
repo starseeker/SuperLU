@@ -12,18 +12,17 @@
 
 #######################################################################
 
-set(ALLAUX lsamen.c)
 set(SCATGEN slatm1.c slaran.c slarnd.c slaruv.c slabad.c slarnv.c)
 set(SLASRC  slatb4.c slaset.c slartg.c)
 set(SMATGEN slatms.c slatme.c slatmr.c slagge.c slagsy.c 
   slarge.c slaror.c slarot.c slatm2.c slatm3.c)
-set(SINTRINSIC  r_lg10.c r_sign.c pow_dd.c)
+set(SINTRINSIC  r_lg10.c r_sign.c pow_dd.c pow_ri.c)
 
 set(DZATGEN dlatm1.c dlaran.c dlarnd.c dlaruv.c dlabad.c dlarnv.c)
 set(DLASRC  dlatb4.c dlaset.c dlartg.c)
 set(DMATGEN dlatms.c dlatme.c dlatmr.c dlagge.c dlagsy.c dlarge.c
   dlaror.c dlarot.c dlatm2.c dlatm3.c)
-set(DINTRINSIC  d_lg10.c d_sign.c pow_dd.c)
+set(DINTRINSIC  d_lg10.c d_sign.c pow_dd.c pow_di.c)
 
 set(CLASRC  clatb4.c claset.c clartg.c clarnv.c clacgv.c csymv.c)
 set(CMATGEN clatms.c clatme.c clatmr.c clagge.c clagsy.c clarge.c
@@ -35,7 +34,7 @@ set(ZMATGEN zlatms.c zlatme.c zlatmr.c zlagge.c zlagsy.c
   zlarge.c zlaror.c zlarot.c zlatm2.c zlatm3.c zlaghe.c 
   zlarnd.c zdotc.c)
 
-set(matgen_SRCS ${ALLAUX} ${SMATGEN} ${SCATGEN} ${SLASRC} ${SINTRINSIC} 
+set(matgen_SRCS ${SMATGEN} ${SCATGEN} ${SLASRC} ${SINTRINSIC} 
   ${DMATGEN} ${DZATGEN} ${DLASRC} ${DINTRINSIC} ${CMATGEN} ${CLASRC} 
   ${ZMATGEN} ${ZLASRC}
   )

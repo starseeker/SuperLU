@@ -1,4 +1,4 @@
-# SuperLU (version 5.0) #
+# SuperLU (version 5.1) #
 SuperLU contains a set of subroutines to solve a sparse linear system A*X=B. It uses Gaussian elimination with partial pivoting (GEPP). The columns of A may be preordered before factorization; the preordering for sparsity is completely separate from the factorization.
 
 SuperLU is implemented in ANSI C, and must be compiled with standard ANSI C compilers. It provides functionality for both real and complex matrices, in both single and double precision. 
@@ -34,6 +34,7 @@ Official [Code Documentation](http://crd-legacy.lbl.gov/~xiaoye/SuperLU/superlu_
     Version 4.1 - November 23, 2010
     Version 4.2 - August 25, 2011
     Version 4.3 - October 27, 2011
-	Version 5.0 - July 26, 2015
+    Version 5.0 - July 26, 2015
+    Version 5.1 - December 3, 2015
 
 Official [Changelog](http://crd-legacy.lbl.gov/~xiaoye/SuperLU/changes.html#slu_change).
