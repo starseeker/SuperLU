@@ -1,3 +1,13 @@
+/*! \file
+Copyright (c) 2003, The Regents of the University of California, through
+Lawrence Berkeley National Laboratory (subject to receipt of any required 
+approvals from U.S. Dept. of Energy) 
+
+All rights reserved. 
+
+The source code is distributed under BSD license, see the file License.txt
+at the top-level directory.
+*/
 
 /*! @file citersol.c
  * \brief Example #1 showing how to use ILU to precondition GMRES
@@ -292,7 +302,7 @@ int main(int argc, char *argv[])
     restrt = SUPERLU_MIN(n / 3 + 1, 50);
     maxit = 1000;
     iter = maxit;
-    resid = 1e-8;
+    resid = 1e-4;
     if (!(x = complexMalloc(n))) ABORT("Malloc fails for x[].");
 
     if (info <= n + 1)
